@@ -1,30 +1,60 @@
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+  <div class="container py-5">
+    <h2 class="mb-4 text-center">Signup Form</h2>
+    <form @submit.prevent="submitForm" class="mb-5">
+      <div class="mb-3">
+        <label>Name</label>
+        <input v-model="name" class="form-control" required />
+      </div>
+      <div class="mb-3">
+        <label>Email</label>
+        <input v-model="email" class="form-control" required />
+      </div>
+      <button class="btn btn-primary">Submit</button>
+    </form>
+
+    <h3>All Signups</h3>
+    <table class="table table-bordered">
+      <thead><tr><th>Name</th><th>Email</th></tr></thead>
+      <tbody>
+        <tr v-for="entry in signups" :key="entry.id">
+          <td>{{ entry.name }}</td>
+          <td>{{ entry.email }}</td>
+          
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
+<script>
+export default {
+  data() {
+    return {
+      name: '',
+      email: '',
+      signups: [],
+      API_BASE: 'http://localhost:3000' // change this to Render URL when deployed
     }
+  },
+  methods: {
+    async submitForm() {
+      await fetch(`${this.API_BASE}/signup`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: this.name, email: this.email }),
+      });
+      this.name = '';
+      this.email = '';
+      this.getSignups();
+    },
+    async getSignups() {
+      const res = await fetch(`${this.API_BASE}/signups`);
+      this.signups = await res.json();
+    }
+  },
+  mounted() {
+    this.getSignups();
   }
 }
-</style>
+</script>
