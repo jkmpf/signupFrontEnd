@@ -34,7 +34,7 @@ export default {
       name: '',
       email: '',
       signups: [],
-      API_BASE: 'http://localhost:3000' // change this to Render URL when deployed
+      API_BASE: 'https://signupbackend-x4ce.onrender.com' // change this to Render URL when deployed
     }
   },
   methods: {
